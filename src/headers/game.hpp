@@ -3,12 +3,10 @@
 #include "board.hpp"
 #include "terminal.hpp"
 
-
 class Game {
 public:
     Game(Board b, const char* navKeys);
     void mainLoop();
-
 
     private:
     void insert(char val);
@@ -21,13 +19,10 @@ public:
     void left();
     void right();
 
-
     void go(); // jump to col,row input
-
 
     // input helpers
     int readKey(); // uses getch() and parses arrows
-
 
 private:
     Board board;
