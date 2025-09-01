@@ -31,7 +31,7 @@ public:
 
 private:
     Board board;
-    Terminal window;
+    Terminal terminal;
     char mode; // 'i' insert, 'p' pencil, 'g' go
     int row, col; // cursor pos
 };

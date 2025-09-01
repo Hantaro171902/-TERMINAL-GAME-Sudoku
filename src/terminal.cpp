@@ -136,10 +136,10 @@ void Terminal::drawPencil() {
             int idx[3] = {0,2,1};
             move_cursor(cellX, cellY);
             for (int k = 0; k < 3; ++k) {
-            char ch = marks[r][c][ idx[k] ];
-            if (!checkColors && ch - '0' == highlightNum) setTextColor(YELLOW);
-            cout << (ch ? ch : ' ');
-            resetTextColor();
+                char ch = marks[r][c][ idx[k] ];
+                if (!checkColors && ch - '0' == highlightNum) setTextColor(YELLOW);
+                cout << (ch ? ch : ' ');
+                resetTextColor();
             }
         }
     }
