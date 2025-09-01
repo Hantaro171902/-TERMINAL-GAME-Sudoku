@@ -1,8 +1,11 @@
-#include "Stopwatch.h"
+#include "stop_watch.hpp"
 #include <chrono>
+#include <iostream>
+
+using namespace std;
 
 bool Stopwatch::running = false;
-std::thread Stopwatch::counter;
+thread Stopwatch::counter;
 int Stopwatch::seconds = 0;
 int Stopwatch::minutes = 0;
 int Stopwatch::hours = 0;
@@ -15,7 +18,7 @@ void Stopwatch::start() {
         return;
     }
     running = true;
-    counter = std::thread(&count);
+    counter = thread(&count);
 }
 
 void Stopwatch::stop() {
@@ -25,7 +28,7 @@ void Stopwatch::stop() {
 
 void Stopwatch::count() {
     while (running) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        this_thread::sleep_for(chrono::milliseconds(1000));
         if (seconds == 60) {
             seconds = 0;
             minutes++;
@@ -40,8 +43,8 @@ void Stopwatch::count() {
     }
 }
 
-std::string Stopwatch::timeTaken() {
-    std::ostringstream timeStr;
+string Stopwatch::timeTaken() {
+    ostringstream timeStr;
 
     timeStr << "Time taken: ";
     if (hours > 1) {

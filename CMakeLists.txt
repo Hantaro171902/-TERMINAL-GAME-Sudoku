@@ -13,7 +13,7 @@ set(SOURCES
     src/utils.cpp
     src/board.cpp
     src/game.cpp
-    src/generator.cpp
+    src/sudoku.cpp
     src/solver.cpp
     src/terminal.cpp
     src/stop_watch.cpp
@@ -22,20 +22,19 @@ set(SOURCES
 
 set(HEADERS
     src/headers/utils.hpp
-    src/headers/disk.hpp
-    src/headers/rod.hpp
-    src/headers/game_service.hpp
-    src/headers/log_service.hpp
-    src/headers/design_char_constants.hpp
-    src/headers/tower_of_hanoi.hpp
+    src/headers/board.hpp
+    src/headers/game.hpp
+    src/headers/sudoku.hpp
+    src/headers/solver.hpp
+    src/headers/terminal.hpp
+    src/headers/stop_watch.hpp
     src/headers/color.hpp
-    src/headers/cursor_input.hpp
 )
 
 # Exe
-add_executable(TowerOfHanoi ${SOURCES} ${HEADERS})
+add_executable(Sudoku ${SOURCES} ${HEADERS})
 
-target_include_directories(TowerOfHanoi PRIVATE src/headers)
+target_include_directories(Sudoku PRIVATE src/headers)
 
 # Optional: copy asset folder into build dir
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

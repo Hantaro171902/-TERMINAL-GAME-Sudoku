@@ -27,6 +27,6 @@ public:
 private:
     Board board;
     Terminal terminal;
-    char mode; // 'i' insert, 'p' pencil, 'g' go
+    char node; // 'i' insert, 'p' pencil, 'g' go
     int row, col; // cursor pos
 };

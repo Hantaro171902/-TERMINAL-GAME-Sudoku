@@ -1,11 +1,14 @@
 #include "solver.hpp"
 #include <algorithm>
+#include <iostream>
 #include <random>
 #include <chrono>
 #include <string>
 #include <stdexcept>
 
 #define SIZE 9
+
+using namespace std;
 
 Solver::Solver() {
     solutions = 0;
@@ -34,7 +37,7 @@ Solver::Solver(int **board) {
     }
 }
 
-Solver::Solver(std::array<std::array<int, 9>, 9> board) {
+Solver::Solver(array<array<int, 9>, 9> board) {
     solutions = 0;
     grid = board;
 }
@@ -43,7 +46,7 @@ Solver::Solver(const char *board) {
     solutions = 0;
     auto idx = 0;
     if (strlen(board) != 81)
-        throw std::invalid_argument("Wrong amount of digits to make a 9x9 sudoku");
+        throw invalid_argument("Wrong amount of digits to make a 9x9 sudoku");
     for (auto i = 0; i < SIZE; i++) {
         for (auto j = 0; j < SIZE; j++) {
             grid[i][j] = board[idx++] - '0';
@@ -51,7 +54,7 @@ Solver::Solver(const char *board) {
     }
 }
 
-std::array<std::array<int, 9>, 9> Solver::getGrid() {
+array<array<int, 9>, 9> Solver::getGrid() {
     return solution;
 }
 
@@ -79,7 +82,6 @@ bool Solver::isSafe(int row, int col, int num) {
     return true; // All checks passed
 }
 
-
 bool Solver::backtrack(int row, int col) {
     // Has reached the end of the board, return true
     if (row == SIZE - 1 && col == SIZE) {
@@ -102,9 +104,9 @@ bool Solver::backtrack(int row, int col) {
     // Here comes the fun part
     // Create array with randomness instead of normal loop
     // used to generate unique puzzles
-    std::array<int, 9> nums {1,2,3,4,5,6,7,8,9};
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    shuffle (nums.begin(), nums.end(), std::default_random_engine(seed));
+    array<int, 9> nums {1,2,3,4,5,6,7,8,9};
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    shuffle (nums.begin(), nums.end(), default_random_engine(seed));
 
     //for (auto num = 1; num <= SIZE; num++) {
     for (auto num : nums) {

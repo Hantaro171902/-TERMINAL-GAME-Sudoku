@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Board::Board(Generator gen): playGrid(gen.getGrid()), startGrid(playGrid), solutionGrid(gen.getSolution()) {
+Board::Board(Sudoku gen): playGrid(gen.getGrid()), startGrid(playGrid), solutionGrid(gen.getSolution()) {
     for (auto &array : pencilMarks) {
         for (auto &vec : array) {
             for (auto i = 0; i < 3; i++) {
@@ -45,19 +45,19 @@ bool Board::isWon() {
     return false;
 }
 
-std::array<std::array<std::vector<char>, 9>, 9> &Board::getPencilMarks() {
+array<array<vector<char>, 9>, 9> &Board::getPencilMarks() {
     return pencilMarks;
 }
 
-std::array<std::array<int, 9>, 9> &Board::getPlayGrid() {
+array<array<int, 9>, 9> &Board::getPlayGrid() {
     return playGrid;
 }
 
-std::array<std::array<int, 9>, 9> &Board::getStartGrid() {
+array<array<int, 9>, 9> &Board::getStartGrid() {
     return startGrid;
 }
 
-std::array<std::array<int, 9>, 9> &Board::getSolution() {
+array<array<int, 9>, 9> &Board::getSolution() {
     return solutionGrid;
 }
 

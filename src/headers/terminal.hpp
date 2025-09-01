@@ -13,7 +13,6 @@ public:
     void check(); // toggle check colors
     void select(int val); // highlight number
 
-
 private:
     // drawing helpers
     void drawFrame();
@@ -32,13 +31,11 @@ private:
     int cursorCol = 0;
     int highlightNum = 0; // 0 = none
 
-
     // layout
     int boardTop = 2; // y
     int boardLeft = 4; // x
     int BoardRows = 19; // 9 cells * 2 + 1 border lines
     int BoardCols = 37; // 9 cells * 4 + 1 border columns
-
 
     // controls
     char leftKey;

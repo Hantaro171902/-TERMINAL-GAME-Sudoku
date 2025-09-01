@@ -1,10 +1,13 @@
-#include "Sudoku.h"
+#include "sudoku.hpp"
 #include <array>
 #include <algorithm>
 #include <random>
 #include <chrono>
-#include <string.h>
+#include <string>
 #include <stdexcept>
+#include <iostream>
+
+using namespace std;
 
 #define SIZE 9
 
@@ -12,7 +15,7 @@ Sudoku::Sudoku():Sudoku(81){};
 
 Sudoku::Sudoku(const char *gridString) {
     if (strlen(gridString) != 81)
-        throw std::invalid_argument("Wrong amount of digits for a sudoku puzzle");
+        throw invalid_argument("Wrong amount of digits for a sudoku puzzle");
     
     auto idx = 0;
     for (auto i = 0; i < 9; i++) {
@@ -38,7 +41,7 @@ Sudoku::Sudoku(int maxUnknowns) {
     solver.solve();
     grid = solver.getGrid();
 
-    std::array<Cell, SIZE*SIZE> cells;
+    array<Cell, SIZE*SIZE> cells;
     int count = 0;
     for (auto i = 0; i < SIZE; i++) {
         for (auto j = 0; j < SIZE; j++) {
@@ -50,8 +53,8 @@ Sudoku::Sudoku(int maxUnknowns) {
     }
 
     // Shuffle array to randomly remove positions
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    shuffle (cells.begin(), cells.end(), std::default_random_engine(seed));
+    unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+    shuffle (cells.begin(), cells.end(), default_random_engine(seed));
 
     int unknowns = 0;
     for (auto cell: cells) {
@@ -75,10 +78,10 @@ Sudoku::Sudoku(int maxUnknowns) {
 }
 
 
-std::array<std::array<int, 9>, 9> Sudoku::getGrid() {
+array<array<int, 9>, 9> Sudoku::getGrid() {
     return grid;
 }
 
-std::array<std::array<int, 9>, 9> Sudoku::getSolution() {
+array<array<int, 9>, 9> Sudoku::getSolution() {
     return solver.getGrid();
 }

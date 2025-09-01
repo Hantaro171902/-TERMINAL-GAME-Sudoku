@@ -1,5 +1,5 @@
 #pragma once
-#include "generator.hpp"
+#include "sudoku.hpp"
 #include <vector>
 #include <map>
 
@@ -17,7 +17,7 @@ class Board {
 
         bool playing;
     public:
-        Board(Generator gen);
+        Board(Sudoku gen);
         void startPlaying();
         void stopPlaying();
         bool isPlaying();
