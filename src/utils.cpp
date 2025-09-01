@@ -53,16 +53,16 @@ void clearTerminal() {
 #endif
 }
 
-// void move_cursor(int x, int y) {
-// #ifdef _WIN32
-//     COORD coord;
-//     coord.X = x;
-//     coord.Y = y;
-//     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-// #else
-//     cout << "\033[" << y << ";" << x << "H"; // Move cursor
-// #endif
-// }
+void move_cursor(int x, int y) {
+#ifdef _WIN32
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+#else
+    cout << "\033[" << y << ";" << x << "H"; // Move cursor
+#endif
+}
 
 
 void hideCursor() {
@@ -168,7 +168,6 @@ const char SYMBOL_T_RIGHT[]      = "\u2524"; // ┤
 const char SYMBOL_T_TOP[]        = "\u252C"; // ┬
 const char SYMBOL_T_BOTTOM[]     = "\u2534"; // ┴
 const char SYMBOL_INTERSECT[]    = "\u253C"; // ┼
-
 
 // Double line box drawing characters
 const char SYMBOL_DOUBLE_HORIZONTAL[]   = "\u2550"; // ═

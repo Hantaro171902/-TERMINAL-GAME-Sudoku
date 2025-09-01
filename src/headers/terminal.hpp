@@ -1,13 +1,11 @@
 #pragma once
 #include <string>
-#include "Board.hpp"
-
+#include "board.hpp"
 
 class Terminal {
 public:
     explicit (Board* g, const char* navKeys);
     ~Terminal();
-
 
     void printBoard();
     void moveCursor(int row, int col);
@@ -25,7 +23,6 @@ private:
     void drawNumbers();
     void drawMode();
     void drawCursor();
-
 
 private:
     Board* game;
