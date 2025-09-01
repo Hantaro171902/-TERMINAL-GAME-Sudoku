@@ -6,7 +6,7 @@
 using namespace std;
 
 Game::Game(Board b, const char* navKeys) : board(b), terminal(&board, navKeys) {
-    node = 'i';
+    mode = 'i';
     row = 0;
     col = 0;
 }
@@ -82,7 +82,7 @@ void Game::insert(char val) { board.insert(val, row, col); }
 void Game::pencil(char val) { board.pencil(val, row, col); }
 
 void Game::changeMode(char c) {
-    node = c;
+    mode = c;
     switch (c) {
         case 'i': terminal.changeMode("Insert mode"); break;
         case 'p': terminal.changeMode("Pencil mode"); break;

@@ -4,7 +4,7 @@
 
 class Terminal {
 public:
-    explicit (Board* g, const char* navKeys);
+    explicit Terminal(Board* g, const char* navKeys);
     ~Terminal();
 
     void printBoard();

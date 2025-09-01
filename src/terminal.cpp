@@ -188,7 +188,7 @@ void Terminal::drawCursor() {
     move_cursor(x, y);
 }
 
-void Terminal::moveCursor() {
+void Terminal::moveCursor(int row, int col) {
     cursorRow = row;
     cursorCol = col;
 }

@@ -4,6 +4,7 @@
 #include <random>
 #include <chrono>
 #include <string>
+#include <cstring>
 #include <stdexcept>
 #include <iostream>
 
