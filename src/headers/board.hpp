@@ -1,5 +1,5 @@
 #pragma once
-#include "Generator.h"
+#include "generator.hpp"
 #include <vector>
 #include <map>
 

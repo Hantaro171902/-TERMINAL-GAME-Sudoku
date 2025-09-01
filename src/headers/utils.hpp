@@ -7,19 +7,18 @@
 void clearScreen();
 void clearTerminal(); // Full terminal reset
 
-void setTextColor(int color);
 void hideCursor();
 void showCursor();
 
 int getch();    // For key input
 bool kbhit();   // For non-blocking keyboard input
 
-void console_size(int width, int height);
+void terminal_size(int width, int height);
 void sleep_ms(int ms);
 int random_range(int min, int max);
 std::string formatTime(int totalSeconds);
 
-void move_cursor(int x, int y);
+// void move_cursor(int x, int y);
 void play_sound(const std::string& path);
 
 

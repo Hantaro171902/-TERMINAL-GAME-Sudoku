@@ -53,25 +53,16 @@ void clearTerminal() {
 #endif
 }
 
-void setTextColor(int color) {
-#ifdef _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, color);
-#else
-    cout << "\033[" << color << "m";
-#endif
-}
-
-void move_cursor(int x, int y) {
-#ifdef _WIN32
-    COORD coord;
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-#else
-    cout << "\033[" << y << ";" << x << "H"; // Move cursor
-#endif
-}
+// void move_cursor(int x, int y) {
+// #ifdef _WIN32
+//     COORD coord;
+//     coord.X = x;
+//     coord.Y = y;
+//     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+// #else
+//     cout << "\033[" << y << ";" << x << "H"; // Move cursor
+// #endif
+// }
 
 
 void hideCursor() {
@@ -143,7 +134,7 @@ bool kbhit() {
 #endif
 }
 
-void console_size(int width, int height) {
+void terminal_size(int width, int height) {
 #ifdef _WIN32
     string cmd = "mode con: cols=" + to_string(width) + " lines=" + to_string(height);
     system(cmd.c_str());
