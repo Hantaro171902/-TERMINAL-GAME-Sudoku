@@ -24,7 +24,7 @@ Terminal::~Terminal() {
 }
 
 void Terminal::printBoard() {
-    clearScreen();
+    clearTerminal(); // Use full terminal reset instead of clearScreen
     drawFrame();
     drawCoords();
     drawInstructions();
@@ -43,21 +43,21 @@ void Terminal::drawFrame() {
 
     for (int i = 0; i < 9; ++i) {
         cout << SYMBOL_DOUBLE_HORIZONTAL << SYMBOL_DOUBLE_HORIZONTAL << SYMBOL_DOUBLE_HORIZONTAL;
-        
         if (i == 8) cout << SYMBOL_DOUBLE_TOP_RIGHT;
-        else if ((i+1) % 3 == 0) cout << "\u2566"; // ╦ heavy 3x box join
-        else cout << "\u2564"; // ╤ thin join
+        else if ((i+1) % 3 == 0) cout << SYMBOL_DOUBLE_T_TOP;   // ╦
+        else cout << "\u2564";                              // ┬
     }
-
 
     // middle rows
     for (int r = 0; r < 9; ++r) {
         // content row
         move_cursor(x, ++y);
-        for (int c = 0; c < 10; ++c) {
-            if (c % 3 == 0) cout << SYMBOL_DOUBLE_VERTICAL; else cout << SYMBOL_VERTICAL;
+        for (int c = 0; c < 28; ++c) {
+            if (c % 3 == 0) cout << SYMBOL_DOUBLE_VERTICAL; 
+            else cout << SYMBOL_VERTICAL;
             if (c < 9) cout << " ";
         }
+
         // separator row
         move_cursor(x, ++y);
         if (r == 8) break; // handled by bottom
@@ -81,7 +81,7 @@ void Terminal::drawFrame() {
     }
 
     // bottom border
-    move_cursor(x, ++y);
+    move_cursor(x, y);
     cout << SYMBOL_DOUBLE_BOTTOM_LEFT;
 
     for (int i = 0; i < 9; ++i) {
@@ -138,6 +138,7 @@ void Terminal::drawPencil() {
             for (int k = 0; k < 3; ++k) {
                 char ch = marks[r][c][ idx[k] ];
                 if (!checkColors && ch - '0' == highlightNum) setTextColor(YELLOW);
+                else setTextColor(GRAY);
                 cout << (ch ? ch : ' ');
                 resetTextColor();
             }
@@ -158,18 +159,18 @@ void Terminal::drawNumbers() {
             int cellX = boardLeft + 2 + c*4;
             // erase pencil area
             move_cursor(cellX-1, cellY);
-            cout << " ";
+            // Clear full 3-char cell to avoid leftover cursor bars
+            cout << "   ";
 
 
             move_cursor(cellX, cellY);
-            setTextColor(WHITE);
-            // number count exhausted
-            if (!game->isRemaining(v)) setTextColor(CYAN);
-            // highlight
+            // Color scheme similar to tuidoku: givens white, entries cyan/blue
+            if (v == start[r][c]) setTextColor(WHITE);
+            else setTextColor(CYAN);
+            // optional highlight
             if (!checkColors && v == highlightNum) setTextColor(BRIGHT_YELLOW);
-            // fixed cells underline imitation: draw with bright white
-            if (v == start[r][c]) setTextColor(BRIGHT_WHITE);
-            else if (checkColors && v == solution[r][c]) setTextColor(BRIGHT_GREEN);
+            // correctness check colors when toggled
+            if (checkColors && v == solution[r][c]) setTextColor(BRIGHT_GREEN);
             else if (checkColors && v != solution[r][c]) setTextColor(BRIGHT_RED);
             cout << (char)('0' + v);
             resetTextColor();
@@ -184,8 +185,16 @@ void Terminal::drawMode() {
 
 void Terminal::drawCursor() {
     int y = boardTop + 1 + cursorRow*2;
-    int x = boardLeft + 2 + cursorCol*4;
-    move_cursor(x, y);
+    int x = boardLeft + 1 + cursorCol*4; // Start from left edge of cell
+
+    // Show a centered vertical bar only for empty cells
+    auto grid = game->getPlayGrid();
+    if (grid[cursorRow][cursorCol] == 0) {
+        move_cursor(x + 1, y);
+        setTextColor(BRIGHT_WHITE);
+        cout << "|";
+        resetTextColor();
+    }
 }
 
 void Terminal::moveCursor(int row, int col) {
@@ -202,6 +211,6 @@ void Terminal::select(int val) {
         int initVal = game->getStartGrid()[cursorRow][cursorCol];
         highlightNum = (initVal == 0) ? 0 : initVal;
     } else {
-        highlightNum = val = '0';
+        highlightNum = val - '0'; // Fix: convert char to int
     }
 }

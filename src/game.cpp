@@ -12,7 +12,7 @@ Game::Game(Board b, const char* navKeys) : board(b), terminal(&board, navKeys) {
 }
 
 static bool isDigitOrSpace(int ch) {
-    return ((ch > '0' && ch < '9') || ch == ' ');
+    return ((ch >= '0' && ch <= '9') || ch == ' ');
 }
 
 int Game::readKey() {
@@ -23,10 +23,10 @@ int Game::readKey() {
             if (ch2 == '[') {
                 int ch3 = getch();
                 switch (ch3) {
-                    case 'A': return 'K'; // up
-                    case 'B': return 'J'; // down
-                    case 'C': return 'L'; // right
-                    case 'D': return 'H'; // left
+                    case 'A': return 'W'; // up
+                    case 'B': return 'S'; // down
+                    case 'C': return 'D'; // right
+                    case 'D': return 'A'; // left
                 }
             }
         }
@@ -45,10 +45,10 @@ void Game::mainLoop() {
     while (board.isPlaying()) {
         int ch = readKey();
         switch (ch) {
-            case 'a': case 'h': case 'H': left(); break;
-            case 's': case 'j': case 'J': down(); break;
-            case 'w': case 'k': case 'K': up(); break;
-            case 'd': case 'l': case 'L': right(); break;
+            case 'a': left(); break;
+            case 's': down(); break;
+            case 'w': up(); break;
+            case 'd': right(); break;
             case 'g': changeMode('g'); terminal.printBoard(); go(); changeMode('i'); break;
             case 'i': changeMode('i'); break;
             case 'p': changeMode('p'); break;
@@ -116,9 +116,18 @@ void Game::right() {
 
 void Game::go() {
     char c = 0, r = 0;
-    while (c < '1' || c > '9') { c = (char)getch(); if (c=='q') return; }
-    while (r < '1' || r > '9') { r = (char)getch(); if (r=='q') return; }
-    row = r - '1'; col = c - '1';
+    while (c < '1' || c > '9') { 
+        c = (char)getch(); 
+        if (c=='q') 
+        return; 
+    }
+    while (r < '1' || r > '9') { 
+        r = (char)getch(); 
+        if (r=='q') 
+        return; 
+    }
+    row = r - '1'; 
+    col = c - '1';
     terminal.moveCursor(row, col);
 }
 
