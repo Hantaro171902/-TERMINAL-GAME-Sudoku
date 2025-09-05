@@ -24,7 +24,8 @@ Terminal::~Terminal() {
 }
 
 void Terminal::printBoard() {
-    clearTerminal(); // Use full terminal reset instead of clearScreen
+    clearTerminal(); // Use full terminal reset
+   
     drawFrame();
     drawCoords();
     drawInstructions();
@@ -32,25 +33,29 @@ void Terminal::printBoard() {
     drawPencil();
     drawMode();
     drawCursor();
+    // place caret in a safe line below the board to avoid any accidental echo near the grid
+    move_cursor(boardLeft, boardTop + BoardRows + 3);
     cout.flush();
 }
-
-
 
 void Terminal::drawFrame() {
     // Outer border using double line symbols from utils
     int y = boardTop; 
     int x = boardLeft;
 
-    // Timer 
-    startTime = std::chrono::steady_clock::now(); // <-- Add this line
-    int timeElapsed = chrono::duration_cast<chrono::seconds>(chrono::steady_clock::now() - startTime).count();
-    // int time = 0;
-    cout << " [TIME: " << formatTime(timeElapsed) << "]" << endl;
-    cout << "-----------------------------" << endl;
+    setTextColor(YELLOW);
+    cout << 
+R"(                  ______     __  __     _____     ______     __  __     __  __    
+                 /\  ___\   /\ \/\ \   /\  __-.  /\  __ \   /\ \/ /    /\ \/\ \   
+                 \ \___  \  \ \ \_\ \  \ \ \/\ \ \ \ \/\ \  \ \  _"-.  \ \ \_\ \  
+                  \/\_____\  \ \_____\  \ \____-  \ \_____\  \ \_\ \_\  \ \_____\ 
+                   \/_____/   \/_____/   \/____/   \/_____/   \/_/\/_/   \/_____/                                                     
+    )" << endl;
+    resetTextColor();
 
-
-
+    // Timer (display accumulated elapsed seconds provided by Game)
+    move_cursor(4, 9);
+    cout << " [ TIME: " << formatTime(elapsedSeconds) << " ]" << endl;
     move_cursor(x, y);
     cout << SYMBOL_DOUBLE_TOP_LEFT;
 
@@ -107,6 +112,8 @@ void Terminal::drawFrame() {
 
 void Terminal::drawCoords() {
     // top numbers
+
+    setTextColor(YELLOW);
     for (int i = 0; i < 9; ++i) {
         move_cursor(boardLeft + 2 + i*4, boardTop - 1);
         cout << (char)('1' + i);
@@ -116,11 +123,13 @@ void Terminal::drawCoords() {
         move_cursor(boardLeft - 2, boardTop + 1 + i*2);
         cout << (char)('1' + i);
     }
+
+    resetTextColor();
 }
 
 void Terminal::drawInstructions() {
     int col = boardLeft + BoardCols + 4;
-    int row = boardTop + 1;
+    int row = boardTop;
     move_cursor(col, row); cout << "Controls:";
     move_cursor(col, row+2); cout << upKey << " = Up";
     move_cursor(col, row+3); cout << leftKey << " = Left";
@@ -134,8 +143,10 @@ void Terminal::drawInstructions() {
     move_cursor(col, row+10); cout << "c = Check colors";
     move_cursor(col, row+11); cout << "x = Delete cell";
     move_cursor(col, row+12); cout << "SPACE = Highlight";
-    move_cursor(col, row+13); cout << "ESC = switch mode";
-    move_cursor(col, row+14); cout << "q = Quit";
+    move_cursor(col, row+13); cout << "TAB = switch mode";
+    move_cursor(col, row+14); cout << "b = Pause/Resume";
+    move_cursor(col, row+15); cout << "r = Restart";
+    move_cursor(col, row+16); cout << "q = Quit";
 }
 
 void Terminal::drawPencil() {
@@ -227,4 +238,13 @@ void Terminal::select(int val) {
     } else {
         highlightNum = val - '0'; // Fix: convert char to int
     }
+}
+
+void Terminal::setElapsedSeconds(int seconds) {
+    elapsedSeconds = seconds < 0 ? 0 : seconds;
+}
+
+void Terminal::resetUI() {
+    checkColors = false;
+    highlightNum = 0;
 }

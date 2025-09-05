@@ -156,3 +156,25 @@ bool Board::isRemaining(int val) {
         return true;
     return count[val] < 9;
 }
+
+void Board::reset() {
+    playGrid = startGrid;
+    // reset pencil marks
+    for (auto &array : pencilMarks) {
+        for (auto &vec : array) {
+            vec.clear();
+            for (auto i = 0; i < 3; i++) {
+                vec.push_back(' ');
+            }
+        }
+    }
+    // rebuild counts
+    count.clear();
+    for (auto i = 1; i <= 9; i++) count.insert({i, 0});
+    for (auto i = 0; i < 9; i++) {
+        for (auto j = 0; j < 9; j++) {
+            int val = startGrid[i][j];
+            if (val != 0) count[val]++;
+        }
+    }
+}

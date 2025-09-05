@@ -31,4 +31,5 @@ class Board {
 
         void insert(char val, int row, int col);
         void pencil(char val, int row, int col);
+        void reset(); // reset play grid, pencil marks and counters to start
 };

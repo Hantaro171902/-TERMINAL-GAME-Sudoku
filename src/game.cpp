@@ -9,6 +9,11 @@ Game::Game(Board b, const char* navKeys) : board(b), terminal(&board, navKeys) {
     mode = 'i';
     row = 0;
     col = 0;
+    paused = false;
+    elapsedSeconds = 0;
+    startTime = std::chrono::steady_clock::now();
+    pausedAccumulated = std::chrono::seconds(0);
+    lastDisplayedSeconds = -1;
 }
 
 static bool isDigitOrSpace(int ch) {
@@ -30,20 +35,49 @@ int Game::readKey() {
                 }
             }
         }
-        return 27;  // bare ESC
+        return 27;  // bare ESC (no longer used for mode toggle)
     }
     return ch;
 }
 
+int Game::pollKey() {
+#ifdef _WIN32
+    if (kbhit()) return readKey();
+    return -1;
+#else
+    if (kbhit()) return readKey();
+    return -1;
+#endif
+}
+
 void Game::mainLoop() {
     board.startPlaying();
-    Stopwatch timer;
-    timer.start();
-
     terminal.printBoard();
 
     while (board.isPlaying()) {
-        int ch = readKey();
+        // compute elapsed seconds precisely from steady_clock
+        if (!paused) {
+            auto now = std::chrono::steady_clock::now();
+            auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
+                now - startTime - pausedAccumulated
+            );
+            elapsedSeconds = (int)elapsed.count();
+        }
+        terminal.setElapsedSeconds(elapsedSeconds);
+
+        // only redraw when the visible seconds change (or on input handled later)
+        if (elapsedSeconds != lastDisplayedSeconds) {
+            terminal.printBoard();
+            lastDisplayedSeconds = elapsedSeconds;
+        }
+
+        int ch = pollKey();
+        if (ch == -1) {
+            // small sleep to avoid busy loop
+            sleep_ms(30);
+            continue;
+        }
+        // ignore any non-control char inputs completely unless digit/space
         switch (ch) {
             case 'a': left(); break;
             case 's': down(); break;
@@ -52,35 +86,47 @@ void Game::mainLoop() {
             case 'g': changeMode('g'); terminal.printBoard(); go(); changeMode('i'); break;
             case 'i': changeMode('i'); break;
             case 'p': changeMode('p'); break;
+            case '\t': // TAB toggles insert/pencil
+                changeMode(mode == 'i' ? 'p' : 'i');
+                terminal.printBoard();
+                break;
+            case 'b': // pause/resume
+                togglePause();
+                terminal.printBoard();
+                break;
+            case 'r':
+            case 'R':
+                restart();
+                terminal.printBoard();
+                break;
             case 'x':
             case 'X':
                 changeMode('x');
-                insert(' '); // clear current cell
+                if (!paused) insert(' '); // clear current cell
                 terminal.printBoard();
                 changeMode('i');
                 break;
             case 'q': board.stopPlaying(); break;
             case 'c': terminal.check(); terminal.printBoard(); break;
-            case 27: // ESC toggle
-                changeMode(mode == 'i' ? 'p' : 'i');
-                terminal.printBoard();
-                break;
             default:
                 if (isDigitOrSpace(ch)) {
-                    terminal.select(ch);
-                    if (mode == 'i') insert((char)ch);
-                    else if (mode == 'p') pencil((char)ch);
+                    if (!paused) {
+                        terminal.select(ch);
+                        if (mode == 'i') insert((char)ch);
+                        else if (mode == 'p') pencil((char)ch);
+                    }
                     terminal.printBoard();
+                    lastDisplayedSeconds = elapsedSeconds;
                 }
+                // otherwise, ignore silently (no redraw needed)
         }
         if (mode == 'i' || mode == 'p') terminal.moveCursor(row, col);
         if (board.isWon()) break;
     }
-
-    timer.stop();
     if (!board.isWon()) return;
 
-    terminal.changeMode(timer.timeTaken());
+    // show final elapsed time
+    terminal.changeMode("Time taken: " + formatTime(elapsedSeconds));
     terminal.printBoard();
     getch();
 }
@@ -135,6 +181,32 @@ void Game::go() {
     }
     row = r - '1'; 
     col = c - '1';
+    terminal.moveCursor(row, col);
+}
+
+void Game::togglePause() {
+    if (!paused) {
+        paused = true;
+        pausedSince = std::chrono::steady_clock::now();
+        terminal.changeMode(std::string("Paused"));
+    } else {
+        paused = false;
+        auto now = std::chrono::steady_clock::now();
+        pausedAccumulated += std::chrono::duration_cast<std::chrono::seconds>(now - pausedSince);
+        terminal.changeMode(std::string("Insert mode"));
+    }
+}
+
+void Game::restart() {
+    board.reset();
+    row = 0; col = 0;
+    mode = 'i';
+    paused = false;
+    elapsedSeconds = 0;
+    startTime = std::chrono::steady_clock::now();
+    pausedAccumulated = std::chrono::seconds(0);
+    lastDisplayedSeconds = -1;
+    terminal.resetUI();
     terminal.moveCursor(row, col);
 }
 
