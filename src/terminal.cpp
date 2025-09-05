@@ -35,9 +35,22 @@ void Terminal::printBoard() {
     cout.flush();
 }
 
+
+
 void Terminal::drawFrame() {
     // Outer border using double line symbols from utils
-    int y = boardTop; int x = boardLeft;
+    int y = boardTop; 
+    int x = boardLeft;
+
+    // Timer 
+    startTime = std::chrono::steady_clock::now(); // <-- Add this line
+    int timeElapsed = chrono::duration_cast<chrono::seconds>(chrono::steady_clock::now() - startTime).count();
+    // int time = 0;
+    cout << " [TIME: " << formatTime(timeElapsed) << "]" << endl;
+    cout << "-----------------------------" << endl;
+
+
+
     move_cursor(x, y);
     cout << SYMBOL_DOUBLE_TOP_LEFT;
 
@@ -119,9 +132,10 @@ void Terminal::drawInstructions() {
     move_cursor(col, row+8); cout << "p = Pencil";
     move_cursor(col, row+9); cout << "g = Go (col,row)";
     move_cursor(col, row+10); cout << "c = Check colors";
-    move_cursor(col, row+11); cout << "SPACE = Highlight";
-    move_cursor(col, row+12); cout << "ESC = switch mode";
-    move_cursor(col, row+13); cout << "q = Quit";
+    move_cursor(col, row+11); cout << "x = Delete cell";
+    move_cursor(col, row+12); cout << "SPACE = Highlight";
+    move_cursor(col, row+13); cout << "ESC = switch mode";
+    move_cursor(col, row+14); cout << "q = Quit";
 }
 
 void Terminal::drawPencil() {

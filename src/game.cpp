@@ -12,7 +12,7 @@ Game::Game(Board b, const char* navKeys) : board(b), terminal(&board, navKeys) {
 }
 
 static bool isDigitOrSpace(int ch) {
-    return ((ch >= '0' && ch <= '9') || ch == ' ');
+    return ((ch > '0' && ch <= '9') || ch == ' ');
 }
 
 int Game::readKey() {
@@ -52,6 +52,13 @@ void Game::mainLoop() {
             case 'g': changeMode('g'); terminal.printBoard(); go(); changeMode('i'); break;
             case 'i': changeMode('i'); break;
             case 'p': changeMode('p'); break;
+            case 'x':
+            case 'X':
+                changeMode('x');
+                insert(' '); // clear current cell
+                terminal.printBoard();
+                changeMode('i');
+                break;
             case 'q': board.stopPlaying(); break;
             case 'c': terminal.check(); terminal.printBoard(); break;
             case 27: // ESC toggle

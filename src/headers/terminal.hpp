@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "board.hpp"
+#include <chrono>
 
 class Terminal {
 public:
@@ -25,6 +26,7 @@ private:
 
 private:
     Board* game;
+    std::chrono::steady_clock::time_point startTime; // Start time for the game
     std::string mode;
     bool checkColors = false;
     int cursorRow = 0;
