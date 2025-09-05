@@ -16,11 +16,11 @@ static void printHelpTerm() {
         "Play Sudoku in the terminal (ANSI).\n\n"
         "Optional args:\n"
         "-h, --help View this page\n"
-        "-w, --wasd Display WASD instead of HJKL\n"
+        "-w, --wasd \n"
         "--opensudoku <xml> Load random puzzle from OpenSudoku XML\n"
         "--sdm <txt> Load random puzzle from .sdm list\n"
         "INTEGER Number of squares to leave empty (difficulty)\n\n"
-        "Move with hjkl/wasd or arrows.\n"
+        "Move with wasd or arrows.\n"
         "'p' pencil, 'i' insert, 'g' go-to, 'c' check-colors, 'q' quit.\n";
 }
 
